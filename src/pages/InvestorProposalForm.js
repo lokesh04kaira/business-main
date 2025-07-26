@@ -1,48 +1,48 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../utils/AuthContext';
-import { db } from '../utils/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/AuthContext";
 
 function InvestorProposalForm() {
   const { currentUser, userRole } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  
+  const [error, setError] = useState("");
+
   // Form state
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [minAmount, setMinAmount] = useState('');
-  const [maxAmount, setMaxAmount] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [expectedReturn, setExpectedReturn] = useState('');
-  const [timeframe, setTimeframe] = useState('');
-  const [contactEmail, setContactEmail] = useState(currentUser?.email || '');
-  const [contactPhone, setContactPhone] = useState('');
-  const [additionalInfo, setAdditionalInfo] = useState('');
+  const [expectedReturn, setExpectedReturn] = useState("");
+  const [timeframe, setTimeframe] = useState("");
+  const [contactEmail, setContactEmail] = useState(currentUser?.email || "");
+  const [contactPhone, setContactPhone] = useState("");
+  const [additionalInfo, setAdditionalInfo] = useState("");
 
   // Business categories
   const categories = [
-    'Technology', 
-    'Real Estate', 
-    'Food & Beverage', 
-    'Healthcare', 
-    'Education', 
-    'Finance', 
-    'E-commerce', 
-    'Manufacturing',
-    'Retail',
-    'Services',
-    'Entertainment',
-    'Travel & Tourism',
-    'Agriculture',
-    'Other'
+    "Technology",
+    "Real Estate",
+    "Food & Beverage",
+    "Healthcare",
+    "Education",
+    "Finance",
+    "E-commerce",
+    "Manufacturing",
+    "Retail",
+    "Services",
+    "Entertainment",
+    "Travel & Tourism",
+    "Agriculture",
+    "Other",
   ];
 
   const handleCategoryToggle = (category) => {
     if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter(cat => cat !== category));
+      setSelectedCategories(
+        selectedCategories.filter((cat) => cat !== category)
+      );
     } else {
       setSelectedCategories([...selectedCategories, category]);
     }
@@ -50,56 +50,60 @@ function InvestorProposalForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (userRole !== 'investor') {
-      setError('Only investors can submit investment proposals');
+
+    if (userRole !== "investor") {
+      setError("Only investors can submit investment proposals");
       return;
     }
-    
+
     if (selectedCategories.length === 0) {
-      setError('Please select at least one business category');
+      setError("Please select at least one business category");
       return;
     }
-    
+
     try {
       setLoading(true);
-      setError('');
-      
-      const proposalData = {
-        title,
-        description,
-        minAmount: parseFloat(minAmount),
-        maxAmount: parseFloat(maxAmount),
-        categories: selectedCategories,
-        expectedReturn,
-        timeframe,
-        contactEmail,
-        contactPhone,
-        additionalInfo,
-        createdBy: currentUser.uid,
-        creatorName: currentUser.displayName,
-        createdAt: new Date().toISOString(),
-        status: 'active'
-      };
-      
+      setError("");
+
+      // TODO: Implement Firebase integration when needed
+      // const proposalData = {
+      //   title,
+      //   description,
+      //   minAmount: parseFloat(minAmount),
+      //   maxAmount: parseFloat(maxAmount),
+      //   categories: selectedCategories,
+      //   expectedReturn,
+      //   timeframe,
+      //   contactEmail,
+      //   contactPhone,
+      //   additionalInfo,
+      //   createdBy: currentUser.uid,
+      //   creatorName: currentUser.displayName,
+      //   createdAt: new Date().toISOString(),
+      //   status: "active",
+      // };
       // const docRef = await addDoc(collection(db, 'investorProposals'), proposalData);
-      
-      navigate('/dashboard', { state: { success: 'Investment proposal submitted successfully!' } });
+
+      navigate("/dashboard", {
+        state: { success: "Investment proposal submitted successfully!" },
+      });
     } catch (error) {
-      console.error('Error submitting investment proposal:', error);
-      setError('Failed to submit investment proposal. Please try again.');
+      console.error("Error submitting investment proposal:", error);
+      setError("Failed to submit investment proposal. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!currentUser || userRole !== 'investor') {
+  if (!currentUser || userRole !== "investor") {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>You must be logged in as an investor to post an investment proposal.</p>
-          <button 
-            onClick={() => navigate('/login')}
+          <p>
+            You must be logged in as an investor to post an investment proposal.
+          </p>
+          <button
+            onClick={() => navigate("/login")}
             className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
           >
             Login
@@ -113,16 +117,22 @@ function InvestorProposalForm() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Post Investment Opportunity</h1>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
-        
-        <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
+
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white shadow-md rounded-lg p-6"
+        >
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="title"
+            >
               Title of Investment Opportunity
             </label>
             <input
@@ -135,9 +145,12 @@ function InvestorProposalForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="description"
+            >
               Description
             </label>
             <textarea
@@ -149,10 +162,13 @@ function InvestorProposalForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4 flex gap-4">
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="minAmount">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="minAmount"
+              >
                 Minimum Investment (INR)
               </label>
               <input
@@ -166,7 +182,10 @@ function InvestorProposalForm() {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxAmount">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="maxAmount"
+              >
                 Maximum Investment (INR)
               </label>
               <input
@@ -180,13 +199,13 @@ function InvestorProposalForm() {
               />
             </div>
           </div>
-          
+
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Business Categories of Interest
             </label>
             <div className="grid grid-cols-2 gap-2">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <div key={category} className="flex items-center">
                   <input
                     id={`cat-${category}`}
@@ -200,12 +219,17 @@ function InvestorProposalForm() {
               ))}
             </div>
             {selectedCategories.length === 0 && (
-              <p className="text-red-500 text-xs italic mt-1">Please select at least one category</p>
+              <p className="text-red-500 text-xs italic mt-1">
+                Please select at least one category
+              </p>
             )}
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="expectedReturn">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="expectedReturn"
+            >
               Expected Return on Investment
             </label>
             <input
@@ -218,9 +242,12 @@ function InvestorProposalForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="timeframe">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="timeframe"
+            >
               Investment Timeframe
             </label>
             <input
@@ -233,9 +260,12 @@ function InvestorProposalForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactEmail">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="contactEmail"
+            >
               Contact Email
             </label>
             <input
@@ -247,9 +277,12 @@ function InvestorProposalForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactPhone">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="contactPhone"
+            >
               Contact Phone
             </label>
             <input
@@ -262,9 +295,12 @@ function InvestorProposalForm() {
               required
             />
           </div>
-          
+
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="additionalInfo">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="additionalInfo"
+            >
               Additional Information (Optional)
             </label>
             <textarea
@@ -275,14 +311,14 @@ function InvestorProposalForm() {
               placeholder="Any additional requirements or information for potential businesses"
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <button
               type="submit"
               disabled={loading}
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              {loading ? 'Submitting...' : 'Post Investment Opportunity'}
+              {loading ? "Submitting..." : "Post Investment Opportunity"}
             </button>
             <button
               type="button"
@@ -298,4 +334,4 @@ function InvestorProposalForm() {
   );
 }
 
-export default InvestorProposalForm; 
+export default InvestorProposalForm;

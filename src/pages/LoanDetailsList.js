@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
 import { db } from "../utils/firebase";
 // import { useAuth } from '../utils/AuthContext';
-import { addDoc } from "firebase/firestore";
 
 function LoanDetailsList() {
   const [loans, setLoans] = useState([]);

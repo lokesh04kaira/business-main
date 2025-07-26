@@ -1,94 +1,94 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../utils/AuthContext';
-import { db } from '../utils/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/AuthContext";
 
 function LoanDetailsForm() {
   const { currentUser, userRole } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  
+  const [error, setError] = useState("");
+
   // Form state
-  const [title, setTitle] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [loanType, setLoanType] = useState('')
-  const [description, setDescription] = useState('');
-  const [interestRate, setInterestRate] = useState('');
-  const [minAmount, setMinAmount] = useState('');
-  const [maxAmount, setMaxAmount] = useState('');
-  const [tenure, setTenure] = useState('');
-  const [eligibility, setEligibility] = useState('');
-  const [documentsRequired, setDocumentsRequired] = useState('');
-  const [contactEmail, setContactEmail] = useState(currentUser?.email || '');
-  const [contactPhone, setContactPhone] = useState('');
-  
+  const [title, setTitle] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [loanType, setLoanType] = useState("");
+  const [description, setDescription] = useState("");
+  const [interestRate, setInterestRate] = useState("");
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
+  const [tenure, setTenure] = useState("");
+  const [eligibility, setEligibility] = useState("");
+  const [documentsRequired, setDocumentsRequired] = useState("");
+  const [contactEmail, setContactEmail] = useState(currentUser?.email || "");
+  const [contactPhone, setContactPhone] = useState("");
+
   // Loan types
   const loanTypes = [
-    'Business Loan',
-    'Term Loan',
-    'Working Capital Loan',
-    'Equipment Financing',
-    'Startup Funding',
-    'Commercial Real Estate Loan',
-    'Line of Credit',
-    'Invoice Financing',
-    'Microfinance',
-    'Rural Business Loan',
-    'MSME Loan',
-    'Other'
+    "Business Loan",
+    "Term Loan",
+    "Working Capital Loan",
+    "Equipment Financing",
+    "Startup Funding",
+    "Commercial Real Estate Loan",
+    "Line of Credit",
+    "Invoice Financing",
+    "Microfinance",
+    "Rural Business Loan",
+    "MSME Loan",
+    "Other",
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (userRole !== 'banker') {
-      setError('Only bankers can post loan details');
+
+    if (userRole !== "banker") {
+      setError("Only bankers can post loan details");
       return;
     }
-    
+
     try {
       setLoading(true);
-      setError('');
-      
-      const loanData = {
-        title,
-        bankName,
-        loanType,
-        description,
-        interestRate: parseFloat(interestRate),
-        minAmount: parseFloat(minAmount),
-        maxAmount: parseFloat(maxAmount),
-        tenure,
-        eligibility,
-        documentsRequired,
-        contactEmail,
-        contactPhone,
-        createdBy: currentUser.uid,
-        creatorName: currentUser.displayName,
-        createdAt: new Date().toISOString(),
-        status: 'active'
-      };
-      
+      setError("");
+
+      // TODO: Implement Firebase integration when needed
+      // const loanData = {
+      //   title,
+      //   bankName,
+      //   loanType,
+      //   description,
+      //   interestRate: parseFloat(interestRate),
+      //   minAmount: parseFloat(minAmount),
+      //   maxAmount: parseFloat(maxAmount),
+      //   tenure,
+      //   eligibility,
+      //   documentsRequired,
+      //   contactEmail,
+      //   contactPhone,
+      //   createdBy: currentUser.uid,
+      //   creatorName: currentUser.displayName,
+      //   createdAt: new Date().toISOString(),
+      //   status: "active",
+      // };
       // const docRef = await addDoc(collection(db, 'loanDetails'), loanData);
-      
-      navigate('/dashboard', { state: { success: 'Loan details submitted successfully!' } });
+
+      navigate("/dashboard", {
+        state: { success: "Loan details submitted successfully!" },
+      });
     } catch (error) {
-      console.error('Error submitting loan details:', error);
-      setError('Failed to submit loan details. Please try again.');
+      console.error("Error submitting loan details:", error);
+      setError("Failed to submit loan details. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!currentUser || userRole !== 'banker') {
+  if (!currentUser || userRole !== "banker") {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           <p>You must be logged in as a banker to post loan details.</p>
-          <button 
-            onClick={() => navigate('/login')}
+          <button
+            onClick={() => navigate("/login")}
             className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
           >
             Login
@@ -102,16 +102,22 @@ function LoanDetailsForm() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Post Loan Details</h1>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
           </div>
         )}
-        
-        <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
+
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white shadow-md rounded-lg p-6"
+        >
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="title"
+            >
               Loan Title
             </label>
             <input
@@ -124,9 +130,12 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bankName">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="bankName"
+            >
               Bank / Financial Institution Name
             </label>
             <input
@@ -138,9 +147,12 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="loanType">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="loanType"
+            >
               Loan Type
             </label>
             <select
@@ -152,13 +164,18 @@ function LoanDetailsForm() {
             >
               <option value="">Select Loan Type</option>
               {loanTypes.map((type) => (
-                <option key={type} value={type}>{type}</option>
+                <option key={type} value={type}>
+                  {type}
+                </option>
               ))}
             </select>
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="description"
+            >
               Loan Description
             </label>
             <textarea
@@ -170,9 +187,12 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="interestRate">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="interestRate"
+            >
               Interest Rate (% p.a.)
             </label>
             <input
@@ -186,10 +206,13 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4 flex gap-4">
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="minAmount">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="minAmount"
+              >
                 Minimum Loan Amount (INR)
               </label>
               <input
@@ -203,7 +226,10 @@ function LoanDetailsForm() {
               />
             </div>
             <div className="w-1/2">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxAmount">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="maxAmount"
+              >
                 Maximum Loan Amount (INR)
               </label>
               <input
@@ -217,9 +243,12 @@ function LoanDetailsForm() {
               />
             </div>
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="tenure">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="tenure"
+            >
               Loan Tenure
             </label>
             <input
@@ -232,9 +261,12 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="eligibility">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="eligibility"
+            >
               Eligibility Criteria
             </label>
             <textarea
@@ -246,9 +278,12 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="documentsRequired">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="documentsRequired"
+            >
               Documents Required
             </label>
             <textarea
@@ -260,9 +295,12 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactEmail">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="contactEmail"
+            >
               Contact Email
             </label>
             <input
@@ -274,9 +312,12 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactPhone">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="contactPhone"
+            >
               Contact Phone
             </label>
             <input
@@ -289,14 +330,14 @@ function LoanDetailsForm() {
               required
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <button
               type="submit"
               disabled={loading}
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              {loading ? 'Submitting...' : 'Post Loan Details'}
+              {loading ? "Submitting..." : "Post Loan Details"}
             </button>
             <button
               type="button"
@@ -312,4 +353,4 @@ function LoanDetailsForm() {
   );
 }
 
-export default LoanDetailsForm; 
+export default LoanDetailsForm;
